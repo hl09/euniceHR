@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head Accept-Ranges="300">
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <link rel="stylesheet" href="//apps.bdimg.com/libs/jqueryui/1.10.4/css/jquery-ui.min.css">
+    <script src="//apps.bdimg.com/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+    <script>
+        $(function () {
+            $("#datepicker").datepicker();
+        });
+
+    </script>
+
+</head>
+<body>
+<form action='' method='post'>
+    {% csrf_token %}
+    {{ form.as_p}}
+
+    <input type="submit" id="newbtn" value="new">
+</form>
+
+<form action='/search/' method='post'>
+    {% csrf_token %}
+    请输入查询姓名：<input type="text" name="searchName">
+    <input type="submit" value="search">
+</form>
+
+
+<form action='/delete/' method='post'>
+    {% csrf_token %}
+    <input type="submit" value="DELETE">
+
+<table border="1">
+    <tr>
+        <td>  </td>
+        <td>工号</td>
+        <td>部门</td>
+        <td>姓名</td>
+        <td>岗位</td>
+        <td>身份证号</td>
+        <td>性别</td>
+        <td>出生年月</td>
+
+    </tr>
+    {% for line in dataList %}
+        <tr>
+            <td><input type="checkbox" value="{{ line.id }}" name="checkboxlist"></td>
+            <td>{{ line.workID }}</td>
+            <td>{{ line.dept }}</td>
+            <td>{{ line.name }}</td>
+            <td>{{ line.job }}</td>
+            <td>{{ line.empID }}</td>
+            <td>{{ line.sex }}</td>
+            <td>{{ line.birthday }}</td>
+        </tr>
+    {% endfor %}
+</table>
+</form>
+
+</body>
+</html>
