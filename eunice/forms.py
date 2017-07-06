@@ -11,3 +11,4 @@ class VideoForm(forms.Form):
     job = forms.CharField(initial='',label='岗位')
     sex = forms.ChoiceField(widget=forms.RadioSelect, choices=SEX_CHOICES, label="性别")
     birthday = forms.DateField(widget=forms.SelectDateWidget(),label='出生年月')
+    opkind = forms.HiddenInput()

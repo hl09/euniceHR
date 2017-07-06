@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>员工信息</title>
+</head>
+<body>
+<form action='/modify?opkind=2' method='post'>
+    {% csrf_token %}
+    {{ form.as_p}}
+
+    <input type="submit"  value="save">
+    <input type="submit"  value="cancel">
+</form>
+</body>
+</html>

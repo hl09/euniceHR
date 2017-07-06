@@ -4,24 +4,67 @@
     <meta charset="UTF-8">
     <title>Title</title>
 
+    <style>
+        .even {
+            background-color: #f8f8f8;
+        }
+
+        .odd {
+            background-color: #f0f0f0;
+        }
+
+        .selected {
+            background-color: #FF6;
+        }
+
+        .se {
+            background-color: #666;
+        }
+
+
+    </style>
+
     <link rel="stylesheet" href="//apps.bdimg.com/libs/jqueryui/1.10.4/css/jquery-ui.min.css">
     <script src="//apps.bdimg.com/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
     <script>
         $(function () {
-            $("#datepicker").datepicker();
+            $('tbody>tr').click(function () {
+                $(this).addClass('selected') //为选中项添加高亮
+                    .siblings().removeClass('selected')//去除其他项的高亮形式
+                    .end();
+            });
         });
 
+        $(document).ready(function () {
+
+            $("tr:even").addClass("even");
+            $("tr:odd").addClass("odd");
+
+
+            $(".grid").on("click", ".btnUPDATE", function () {
+                var url = "/modify/";
+                alert(url);
+                //更改form的action
+                $("#gridform").attr("action", url);
+                //触发submit事件，提交表单
+                $("#gridform").submit();
+            });
+
+            $(".grid").on("click", ".btnDELETE", function () {
+                var url = "/delete/";
+                alert(url);
+                //更改form的action
+                $("#gridform").attr("action", url);
+                //触发submit事件，提交表单
+                $("#gridform").submit();
+            });
+        })
     </script>
 
 </head>
 <body>
-<form action='' method='post'>
-    {% csrf_token %}
-    {{ form.as_p}}
 
-    <input type="submit" id="newbtn" value="new">
-</form>
 
 <form action='/search/' method='post'>
     {% csrf_token %}
@@ -30,35 +73,37 @@
 </form>
 
 
-<form action='/delete/' method='post'>
+<form id="gridform" action='/delete/' method='post'>
     {% csrf_token %}
-    <input type="submit" value="DELETE">
-
-<table border="1">
-    <tr>
-        <td>  </td>
-        <td>工号</td>
-        <td>部门</td>
-        <td>姓名</td>
-        <td>岗位</td>
-        <td>身份证号</td>
-        <td>性别</td>
-        <td>出生年月</td>
-
-    </tr>
-    {% for line in dataList %}
+    <table border="1">
         <tr>
-            <td><input type="checkbox" value="{{ line.id }}" name="checkboxlist"></td>
-            <td>{{ line.workID }}</td>
-            <td>{{ line.dept }}</td>
-            <td>{{ line.name }}</td>
-            <td>{{ line.job }}</td>
-            <td>{{ line.empID }}</td>
-            <td>{{ line.sex }}</td>
-            <td>{{ line.birthday }}</td>
+            <td></td>
+            <td>工号</td>
+            <td>部门</td>
+            <td>姓名</td>
+            <td>岗位</td>
+            <td>身份证号</td>
+            <td>性别</td>
+            <td>出生年月</td>
+            <td>删除</td>
+            <td>修改</td>
+
         </tr>
-    {% endfor %}
-</table>
+        {% for line in dataList %}
+            <tr class="grid">
+                <td><input type="checkbox" value="{{ line.id }}" name="checkboxlist"></td>
+                <td>{{ line.workID }}</td>
+                <td>{{ line.dept }}</td>
+                <td><a href='/modify/' target='_blank'>{{ line.name }}</a></td>
+                <td>{{ line.job }}</td>
+                <td>{{ line.empID }}</td>
+                <td>{{ line.sex }}</td>
+                <td>{{ line.birthday }}</td>
+                <td><input type="button" class="btnDELETE" value="DELETE"></td>
+                <td><input type="button" class="btnUPDATE" value="UPDATE"></td>
+            </tr>
+        {% endfor %}
+    </table>
 </form>
 
 </body>
