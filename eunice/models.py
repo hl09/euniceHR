@@ -11,3 +11,5 @@ class Employee(models.Model):
     job = models.CharField(max_length=20)
     sex = models.CharField(max_length=4)
     birthday = models.DateField()
+    onboardDate = models.DateField()
+    flag = models.CharField(max_length=10)

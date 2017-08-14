@@ -66,9 +66,13 @@
 <body>
 
 
+
+
 <form action='/search/' method='post'>
     {% csrf_token %}
     请输入查询姓名：<input type="text" name="searchName">
+    请输入查询工号：<input type="text" name="searchID">
+    请输入查询部门：<input type="text" name="searchDept">
     <input type="submit" value="search">
 </form>
 
@@ -85,22 +89,21 @@
             <td>身份证号</td>
             <td>性别</td>
             <td>出生年月</td>
+            <td>入职时间</td>
             <td>删除</td>
-            <td>修改</td>
-
         </tr>
         {% for line in dataList %}
             <tr class="grid">
                 <td><input type="checkbox" value="{{ line.id }}" name="checkboxlist"></td>
                 <td>{{ line.workID }}</td>
                 <td>{{ line.dept }}</td>
-                <td><a href='/modify/' target='_blank'>{{ line.name }}</a></td>
+                <td><a href='/showmodify/?id={{ line.id }}&opkind=m'>{{ line.name }}</a></td>
                 <td>{{ line.job }}</td>
                 <td>{{ line.empID }}</td>
                 <td>{{ line.sex }}</td>
                 <td>{{ line.birthday }}</td>
+                <td>{{ line.onboardDate }}</td>
                 <td><input type="button" class="btnDELETE" value="DELETE"></td>
-                <td><input type="button" class="btnUPDATE" value="UPDATE"></td>
             </tr>
         {% endfor %}
     </table>

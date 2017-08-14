@@ -2,6 +2,7 @@ from django.shortcuts import render
 
 from .forms import *
 from eunice import models
+from django.db.models import Q
 
 
 # Create your views here.
@@ -11,11 +12,54 @@ def employeeList(request):
     return render(request, 'index.html', {'dataList': aList})
 
 
-def modify(request):
-    aform = VideoForm()
-    aform.opkind = 'modify'
+def showModify(request):
+    opkind = request.GET.get('opkind')
+    flag = opkind
+    if opkind == 'm':
+        id = request.GET.get('id')
+        employee = models.Employee.objects.get(id=id)
+
+        empID = employee.empID
+        name = employee.name
+        dept = employee.dept
+        job = employee.job
+        birthday = employee.birthday
+        workID = employee.workID
+        sex = employee.sex
+        onboardDate = employee.onboardDate
+        if employee:
+            aform = VideoForm(
+                {'name': name, 'dept': dept, 'opkind': opkind, 'empID': empID, 'birthday': birthday, 'job': job,
+                 'workID': workID,'onboardDate':onboardDate,'sex': sex})
+    else:
+        aform = VideoForm()
 
     return render(request, 'employee.html', {'form': aform})
+
+
+def saveEmployee(request):
+    if request.method == 'POST':
+        aform = VideoForm(request.POST)
+        if aform.is_valid():
+            opkind = aform.cleaned_data['opkind']
+
+            if opkind == 'm':
+                empID = aform.cleaned_data['empID']
+                employee = models.Employee.objects.get(empID=empID)
+            else:
+                employee = models.Employee()
+
+            employee.workID = aform.cleaned_data['workID']
+            employee.job = aform.cleaned_data['job']
+            employee.birthday = aform.cleaned_data['birthday']
+            employee.sex = aform.cleaned_data['sex']
+            employee.dept = aform.cleaned_data['dept']
+            employee.name = aform.cleaned_data['name']
+            employee.onboardDate = aform.cleaned_data['onboardDate']
+            employee.save()
+
+        aList = models.Employee.objects.all()
+        return render(request, 'index.html', {'dataList': aList})
 
 
 def delete(request):
@@ -32,11 +76,21 @@ def delete(request):
 
 def search(request):
     if request.POST:
-        sname = request.POST['searchName']
         kwargs = {}
-        kwargs['empName'] = sname
 
-    aList = models.Employee.objects.filter(name=sname)
+        sname = request.POST['searchName']
+        sID = request.POST['searchID']
+        sDept = request.POST['searchDept']
+
+        if sname:
+            kwargs['name'] = sname
+        if sID:
+            kwargs['workID'] = sID
+        if sDept:
+            kwargs['dept'] = sDept
+
+        aList = models.Employee.objects.filter(**kwargs)
+        #aList = models.Employee.objects.filter(Q(name__contains=sname) | Q(workID=sID))
 
     return render(request, 'index.html', {'dataList': aList})
 
