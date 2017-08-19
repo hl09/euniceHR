@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>周报表</title>
+</head>
+<body>
+<table border="1">
+        <tr>
+            <td></td>
+            <td>工号</td>
+            <td>部门</td>
+            <td>姓名</td>
+            <td>岗位</td>
+            <td>身份证号</td>
+            <td>性别</td>
+            <td>出生年月</td>
+            <td>入职时间</td>
+        </tr>
+        {% for line in dataList %}
+            <tr class="grid">
+                <td><input type="checkbox" value="{{ line.id }}" name="checkboxlist"></td>
+                <td>{{ line.workID }}</td>
+                <td>{{ line.dept }}</td>
+                <td><a href='/showmodify/?id={{ line.id }}&opkind=m'>{{ line.name }}</a></td>
+                <td>{{ line.job }}</td>
+                <td>{{ line.empID }}</td>
+                <td>{{ line.sex }}</td>
+                <td>{{ line.birthday }}</td>
+                <td>{{ line.onboardDate }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

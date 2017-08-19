@@ -1,15 +1,69 @@
-from django.shortcuts import render
-
+from django.shortcuts import render ,HttpResponse ,HttpResponseRedirect,render_to_response
 from .forms import *
 from eunice import models
-from django.db.models import Q
+import json
+
 
 
 # Create your views here.
 
+class CJsonEncoder(json.JSONEncoder):
+    def default(self, obj):
+        try:
+            if isinstance(obj, (datetime,date,)):
+                 return obj.strftime('%Y-%m-%d %H:%M:%S')
+            else:
+                return json.JSONEncoder.default(self, obj)
+        except Exception as e:
+            print(e)
+
+
 def employeeList(request):
     aList = models.Employee.objects.all()
     return render(request, 'index.html', {'dataList': aList})
+
+def showgrid(request):
+    return render(request, 'a.html')
+
+def weekReport(request):
+    aList = models.Employee.objects.all()
+    dataList = []
+    for aItem in aList:
+        dataList.append({"empID": aItem.empID, "dept": aItem.dept, "name": aItem.name, "job": aItem.job})
+
+
+    eaList_len = json.dumps(len(dataList))
+    json_data_list = {'rows':dataList,'total':eaList_len}
+    easyList = json.dumps(json_data_list, cls=CJsonEncoder)
+    return HttpResponse(easyList)
+
+def statistical(request):
+    depts = ['安监室', '财务', '技术', '商务', '制造', '制造-物流', '质保', '综合办']
+    beanList = []
+    sgc = 0
+    sgl = 0
+    sjj = 0
+    szj = 0
+    if request.method == 'POST':
+        # 按部门进行循环统计
+        for dept in depts:
+            query = models.Employee.objects.filter(dept=dept)
+            zongji = query.count()
+            # 按四大类别进行统计
+            gc = query.filter(jobType='工程技术人员').count()
+            gl = query.filter(jobType='管理人员').count()
+            jj = query.filter(jobType='间接生产工人').count()
+            zj = query.filter(jobType='直接生产工人').count()
+
+            aBean = models.SumDataBean(dept, gc, gl, jj, zj, zongji)
+            beanList.append(aBean)
+            sgc = sgc + gc
+            sgl = sgl + gl
+            sjj = sjj + jj
+            szj = szj + zj
+        sumBean = models.SumDataBean('总计', sgc, sgl, sjj, szj, sgc + sgl + sjj + szj)
+        beanList.append(sumBean)
+    return render(request, 'sumpage.html', {'depts': depts, 'beanList': beanList})
 
 
 def showModify(request):
@@ -30,7 +84,7 @@ def showModify(request):
         if employee:
             aform = VideoForm(
                 {'name': name, 'dept': dept, 'opkind': opkind, 'empID': empID, 'birthday': birthday, 'job': job,
-                 'workID': workID,'onboardDate':onboardDate,'sex': sex})
+                 'workID': workID, 'onboardDate': onboardDate, 'sex': sex})
     else:
         aform = VideoForm()
 
@@ -90,7 +144,7 @@ def search(request):
             kwargs['dept'] = sDept
 
         aList = models.Employee.objects.filter(**kwargs)
-        #aList = models.Employee.objects.filter(Q(name__contains=sname) | Q(workID=sID))
+        # aList = models.Employee.objects.filter(Q(name__contains=sname) | Q(workID=sID))
 
     return render(request, 'index.html', {'dataList': aList})
 

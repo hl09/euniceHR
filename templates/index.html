@@ -76,6 +76,15 @@
     <input type="submit" value="search">
 </form>
 
+<form action='/statistical/' method='post'>
+    {% csrf_token %}
+    <input type="submit" value="统计">
+</form>
+
+<form action='/weekreport/' method='post'>
+    {% csrf_token %}
+    <input type="submit" value="周报">
+</form>
 
 <form id="gridform" action='/delete/' method='post'>
     {% csrf_token %}
