@@ -2,15 +2,147 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>员工信息</title>
+    <title>员工基本信息</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/easyui.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/icon.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/demo.css">
+    <script type="text/javascript" src="/static/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/static/js/easyui-lang-zh_CN.js"></script>
 </head>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('input:text:first').focus();
+        $('input:text').bind("keydown", function (e) {
+            if (e.which == 13) {   //Enter key
+                e.preventDefault(); //to skip default behaviour of enter key
+                var nextinput = $('input:text')[$('input:text').index(this) + 1];
+                if (nextinput != undefined) {
+                    nextinput.focus();
+                } else {
+                    alert("没有下一个输入框！");
+                }
+            }
+        });
+
+    });
+</script>
+
 <body>
 <form action='/saveemployee/' method='post'>
     {% csrf_token %}
-    {{ form.as_p }}
+    <table border="0.5" table-layout="fixed">
+        <tr>
+            <td>{{ form.dept.label }}</td>
+            <td>{{ form.dept }}</td>
+            <td>{{ form.name.label }}</td>
+            <td>{{ form.name }}</td>
+            <td>{{ form.workID.label }}</td>
+            <td>{{ form.workID }}</td>
+            <td>{{ form.job.label }}</td>
+            <td>{{ form.job }}</td>
+        </tr>
+        <tr>
+            <td>{{ form.section.label }}</td>
+            <td>{{ form.section }}</td>
+            <td>{{ form.team.label }}</td>
+            <td>{{ form.team }}</td>
+            <td>{{ form.process.label }}</td>
+            <td>{{ form.process }}</td>
+            <td>{{ form.jobType.label }}</td>
+            <td>{{ form.jobType }}</td>
+        </tr>
+        <tr>
+            <td>{{ form.employType.label }}</td>
+            <td>{{ form.employType }}</td>
+            <td>{{ form.jobTitle.label }}</td>
+            <td>{{ form.jobTitle }}</td>
+            <td>{{ form.empID.label }}</td>
+            <td>{{ form.empID }}</td>
+        </tr>
+
+        <tr>
+            <td>{{ form.sex.label }}</td>
+            <td>{{ form.sex }}</td>
+            <td>{{ form.birthday.label }}</td>
+            <td>{{ form.birthday }}</td>
+            <td>{{ form.mobile.label }}</td>
+            <td>{{ form.mobile }}</td>
+            <td>{{ form.household.label }}</td>
+            <td>{{ form.household }}</td>
+        </tr>
+        <tr>
+            <td>{{ form.householdType.label }}</td>
+            <td>{{ form.householdType }}</td>
+            <td>{{ form.nation.label }}</td>
+            <td>{{ form.nation }}</td>
+            <td>{{ form.political.label }}</td>
+            <td>{{ form.political }}</td>
+            <td>{{ form.firstWorkDate.label }}</td>
+            <td>{{ form.firstWorkDate }}</td>
+        </tr>
+        <tr>
+            <td>{{ form.onboardDate.label }}</td>
+            <td>{{ form.onboardDate }}</td>
+            <td>{{ form.education.label }}</td>
+            <td>{{ form.education }}</td>
+            <td>{{ form.degree.label }}</td>
+            <td>{{ form.degree }}</td>
+            <td>{{ form.graduateDate.label }}</td>
+            <td>{{ form.graduateDate }}</td>
+        </tr>
+        <tr>
+            <td>{{ form.educationType.label }}</td>
+            <td>{{ form.educationType }}</td>
+            <td>{{ form.university.label }}</td>
+            <td>{{ form.university }}</td>
+            <td>{{ form.specialty.label }}</td>
+            <td>{{ form.specialty }}</td>
+            <td>{{ form.foreignLanguage.label }}</td>
+            <td>{{ form.foreignLanguage }}</td>
+        </tr>
+
+        <tr>
+
+            <td>{{ form.contract.label }}</td>
+            <td>{{ form.contract }}</td>
+            <td>{{ form.contractTime.label }}</td>
+            <td>{{ form.contractTime }}</td>
+            <td>{{ form.contractStart.label }}</td>
+            <td>{{ form.contractStart }}</td>
+            <td>{{ form.contractEnd.label }}</td>
+            <td>{{ form.contractEnd }}</td>
+        </tr>
+
+        <tr>
+            <td>{{ form.labor.label }}</td>
+            <td>{{ form.labor }}</td>
+            <td>{{ form.technicalTitle.label }}</td>
+            <td>{{ form.technicalTitle }}</td>
+            <td>{{ form.technicalName.label }}</td>
+            <td>{{ form.technicalName }}</td>
+            <td>{{ form.workerLevel.label }}</td>
+            <td>{{ form.workerLevel }}</td>
+        </tr>
+
+        <tr>
+            <td>{{ form.homeAddress.label }}</td>
+            <td>{{ form.homeAddress }}</td>
+            <td>{{ form.certificate.label }}</td>
+            <td>{{ form.certificate }}</td>
+            <td>{{ form.medicalResult.label }}</td>
+            <td>{{ form.medicalResult }}</td>
+            <td>{{ form.flag.label }}</td>
+            <td>{{ form.flag }}</td>
+        </tr>
+
+    </table>
+    <div style="display: none"> {{ form.opkind }} </div>
     <input type="submit" value="save">
-    <input type="submit" value="cancel">
 
 </form>
+
+
 </body>
 </html>

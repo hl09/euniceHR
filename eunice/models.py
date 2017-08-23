@@ -35,13 +35,13 @@ class Employee(models.Model):
     contractStart = models.DateField()
     contractEnd = models.DateField()
     technicalTitle = models.CharField(max_length=20)
+    technicalName = models.CharField(max_length=20)
     workerLevel = models.CharField(max_length=20)
     homeAddress = models.CharField(max_length=20)
-    certificate = models.CharField(max_length=20)
     birthday = models.DateField()
     medicalResult = models.CharField(max_length=20)
     certificate = models.CharField(max_length=20)
-    onboardDate = models.DateField()
+    onboardDate = models.CharField(max_length=50)
     flag = models.CharField(max_length=10)
 
 
