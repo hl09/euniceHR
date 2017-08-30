@@ -29,8 +29,10 @@
     });
 </script>
 
+
+
 <body>
-<form action='/saveemployee/' method='post'>
+<form action='/saveemployee/' method='post' id="empfrm">
     {% csrf_token %}
     <table border="0.5" table-layout="fixed">
         <tr>
@@ -134,15 +136,23 @@
             <td>{{ form.medicalResult.label }}</td>
             <td>{{ form.medicalResult }}</td>
             <td>{{ form.flag.label }}</td>
-            <td>{{ form.flag }}</td>
+            <td></td>
         </tr>
 
+
+        <div style="display: none"> {{ form.opkind }} </div>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><input type="submit" value="Submit" onclick="disabled=true;submit()" /></td>
+        </tr>
     </table>
-    <div style="display: none"> {{ form.opkind }} </div>
-    <input type="submit" value="save">
-
 </form>
-
 
 </body>
 </html>

@@ -1,6 +1,7 @@
 from django.shortcuts import render, HttpResponse, HttpResponseRedirect, render_to_response
 from .forms import *
 from eunice import models
+from django.db.models import Q
 import json
 import win32com.client as wc
 import pythoncom
@@ -20,7 +21,7 @@ class CJsonEncoder(json.JSONEncoder):
 
 
 def employeeList(request):
-    aList = models.Employee.objects.all()
+    aList = models.Employee.objects.filter(flag='O')
 
     return render(request, 'index.html', {'dataList': aList})
 
@@ -41,18 +42,54 @@ def weekReport(request):
         i = i + 1
         dataList.append({"empID": aItem.empID, "dept": aItem.dept, "name": aItem.name, "job": aItem.job})
         workbook.Worksheets('Sheet1').Cells(i, 1).Value = i - 1
-        workbook.Worksheets('Sheet1').Cells(i, 1).BorderAround(1, 4)
-
         workbook.Worksheets('Sheet1').Cells(i, 2).Value = aItem.dept
-        workbook.Worksheets('Sheet1').Cells(i, 2).BorderAround(1, 4)
-
         workbook.Worksheets('Sheet1').Cells(i, 3).Value = aItem.name
-        workbook.Worksheets('Sheet1').Cells(i, 3).BorderAround(1, 4)
+        workbook.Worksheets('Sheet1').Cells(i, 4).Value = aItem.workID
+        workbook.Worksheets('Sheet1').Cells(i, 5).Value = aItem.job
+        workbook.Worksheets('Sheet1').Cells(i, 6).Value = aItem.section
+        workbook.Worksheets('Sheet1').Cells(i, 7).Value = aItem.team
+        workbook.Worksheets('Sheet1').Cells(i, 8).Value = aItem.process
+        workbook.Worksheets('Sheet1').Cells(i, 9).Value = aItem.jobType
+        workbook.Worksheets('Sheet1').Cells(i, 10).Value = aItem.employType
+        workbook.Worksheets('Sheet1').Cells(i, 11).Value = aItem.jobTitle
+        workbook.Worksheets('Sheet1').Cells(i, 12).Value = aItem.empID
+        workbook.Worksheets('Sheet1').Cells(i, 13).Value = aItem.sex
+        workbook.Worksheets('Sheet1').Cells(i, 14).Value = str(aItem.birthday)
 
-        workbook.Worksheets('Sheet1').Cells(i, 4).Value = aItem.job
-        workbook.Worksheets('Sheet1').Cells(i, 4).BorderAround(1, 1)
+        workbook.Worksheets('Sheet1').Cells(i, 17).Value = aItem.mobile
+        workbook.Worksheets('Sheet1').Cells(i, 18).Value = aItem.household
+        workbook.Worksheets('Sheet1').Cells(i, 19).Value = aItem.householdType
+        workbook.Worksheets('Sheet1').Cells(i, 20).Value = aItem.nation
+        workbook.Worksheets('Sheet1').Cells(i, 21).Value = aItem.political
+        workbook.Worksheets('Sheet1').Cells(i, 22).Value = aItem.firstWorkDate
+        workbook.Worksheets('Sheet1').Cells(i, 23).Value = aItem.onboardDate
 
-    workbook.SaveAs(r'D:\aa.xlsx')
+        workbook.Worksheets('Sheet1').Cells(i, 25).Value = aItem.education
+        workbook.Worksheets('Sheet1').Cells(i, 26).Value = aItem.degree
+        workbook.Worksheets('Sheet1').Cells(i, 27).Value = aItem.graduateDate
+        workbook.Worksheets('Sheet1').Cells(i, 28).Value = aItem.educationType
+        workbook.Worksheets('Sheet1').Cells(i, 29).Value = aItem.university
+        workbook.Worksheets('Sheet1').Cells(i, 30).Value = aItem.specialty
+        workbook.Worksheets('Sheet1').Cells(i, 31).Value = aItem.foreignLanguage
+        workbook.Worksheets('Sheet1').Cells(i, 32).Value = aItem.labor
+        workbook.Worksheets('Sheet1').Cells(i, 33).Value = aItem.contract
+        workbook.Worksheets('Sheet1').Cells(i, 34).Value = aItem.contractTime
+        workbook.Worksheets('Sheet1').Cells(i, 35).Value = str(aItem.contractStart)
+        workbook.Worksheets('Sheet1').Cells(i, 36).Value = str(aItem.contractEnd)
+        workbook.Worksheets('Sheet1').Cells(i, 37).Value = aItem.technicalTitle
+        workbook.Worksheets('Sheet1').Cells(i, 38).Value = aItem.technicalName
+        workbook.Worksheets('Sheet1').Cells(i, 39).Value = aItem.workerLevel
+        workbook.Worksheets('Sheet1').Cells(i, 40).Value = aItem.homeAddress
+        workbook.Worksheets('Sheet1').Cells(i, 41).Value = aItem.certificate
+        workbook.Worksheets('Sheet1').Cells(i, 42).Value = aItem.medicalResult
+        if i > 5:
+            break
+
+    sht = workbook.Worksheets('Sheet1')
+    for j in range(i + 1, 1001):
+        sht.Rows(i + 1).Delete()
+
+    workbook.SaveAs(r'D:\weekreport_wh.xlsx')
     excel_app.Application.Quit()
 
     eaList_len = json.dumps(len(dataList))
@@ -71,7 +108,7 @@ def statistical(request):
     if request.method == 'POST':
         # 按部门进行循环统计
         for dept in depts:
-            query = models.Employee.objects.filter(dept=dept)
+            query = models.Employee.objects.filter(dept=dept,flag='O')
             zongji = query.count()
             # 按四大类别进行统计
             gc = query.filter(jobType='工程技术人员').count()
@@ -100,23 +137,57 @@ def showModify(request):
         name = employee.name
         dept = employee.dept
         job = employee.job
+        section = employee.section
+        team = employee.team
+        process = employee.process
+        jobType = employee.jobType
+        employType = employee.employType
+        jobTitle = employee.jobTitle
+
         birthday = employee.birthday
         workID = employee.workID
         sex = employee.sex
         onboardDate = employee.onboardDate
         mobile = employee.mobile
         household = employee.household
+        householdType = employee.householdType
+        nation = employee.nation
+        political = employee.political
+        firstWorkDate = employee.firstWorkDate
+
+        labor = employee.labor
         contract = employee.contract
         contractTime = employee.contractTime
         contractStart = employee.contractStart
         contractEnd = employee.contractEnd
+        education = employee.education
+        educationType = employee.educationType
+        university = employee.university
+        graduateDate = employee.graduateDate
+        degree = employee.degree
+        foreignLanguage = employee.foreignLanguage
+        certificate = employee.certificate
+        specialty = employee.specialty
+        technicalTitle = employee.technicalTitle
+        technicalName = employee.technicalName
+        workerLevel = employee.workerLevel
+        homeAddress = employee.homeAddress
+        medicalResult = employee.medicalResult
 
         if employee:
             aform = VideoForm(
                 {'name': name, 'dept': dept, 'opkind': opkind, 'empID': empID, 'onboardDate': onboardDate,
-                 'birthday': birthday, 'job': job, 'mobile': mobile, 'household': household, 'contract': contract,
-                 'contractTime': contractTime,'contractStart':contractStart,'contractEnd':contractEnd,
-                 'workID': workID, 'sex': sex})
+                 'birthday': birthday, 'job': job, 'mobile': mobile, 'household': household, 'labor': labor,
+                 'contract': contract, 'team': team, 'process': process, 'jobType': jobType, 'employType': employType,
+                 'jobTitle': jobTitle, 'contractTime': contractTime, 'contractStart': contractStart,
+                 'contractEnd': contractEnd,
+                 'workID': workID, 'sex': sex, 'section': section, 'medicalResult': medicalResult,
+                 'homeAddress': homeAddress, 'workerLevel': workerLevel, 'technicalName': technicalName,
+                 'technicalTitle': technicalTitle, 'specialty': specialty, 'certificate': certificate,
+                 'firstWorkDate': firstWorkDate, 'political': political, 'nation': nation,
+                 'foreignLanguage': foreignLanguage, 'degree': degree, 'graduateDate': graduateDate,
+                 'university': university, 'education': education, 'educationType': educationType,
+                 'householdType': householdType})
 
     else:
         aform = VideoForm()
@@ -178,11 +249,14 @@ def saveEmployee(request):
 
             employee.certificate = aform.cleaned_data['certificate']
             employee.medicalResult = aform.cleaned_data['medicalResult']
+            employee.flag = 'O'
 
             employee.save()
 
-        aList = models.Employee.objects.all()
-        return render(request, 'index.html', {'dataList': aList})
+            # aList = models.Employee.objects.all()
+            # return render(request, 'index.html', {'dataList': aList})
+
+    return HttpResponseRedirect('/index/')
 
 
 def delete(request):
@@ -192,18 +266,23 @@ def delete(request):
             idstring = ','.join(checkboxlist)
             models.Employee.objects.extra(where=['id IN (' + idstring + ')']).delete()
 
-    aList = models.Employee.objects.all()
-
-    return render(request, 'index.html', {'dataList': aList})
+    return HttpResponseRedirect('/index/')
 
 
 def search(request):
+    aList = models.Employee.objects.filter(flag='O')
     if request.POST:
         kwargs = {}
 
         sname = request.POST['searchName']
         sID = request.POST['searchID']
         sDept = request.POST['searchDept']
+        sJob = request.POST['searchJob']
+        sDate = request.POST['sDate']
+        eDate = request.POST['eDate']
+        sEmpID = request.POST['searchEmpID']
+
+        sLeave = request.POST.getlist("searchLeave")
 
         if sname:
             kwargs['name'] = sname
@@ -211,8 +290,17 @@ def search(request):
             kwargs['workID'] = sID
         if sDept:
             kwargs['dept'] = sDept
+        if sJob:
+            kwargs['job'] = sJob
+        if sEmpID:
+            kwargs['empID'] = sEmpID
+        if sLeave:
+            kwargs['flag'] = 'L'
+            aList = models.Employee.objects.all()
 
-        aList = models.Employee.objects.filter(**kwargs)
-        # aList = models.Employee.objects.filter(Q(name__contains=sname) | Q(workID=sID))
+        aList = aList.filter(**kwargs)
+
+        if sDate:
+            aList = aList.filter((Q(onboardDate__gte=sDate) & Q(onboardDate__lte=eDate)))
 
     return render(request, 'index.html', {'dataList': aList})

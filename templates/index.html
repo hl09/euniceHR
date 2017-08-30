@@ -23,10 +23,12 @@
 
 
     </style>
-
-    <link rel="stylesheet" href="//apps.bdimg.com/libs/jqueryui/1.10.4/css/jquery-ui.min.css">
-    <script src="//apps.bdimg.com/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/css/easyui.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/icon.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/demo.css">
+    <script type="text/javascript" src="/static/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/static/js/easyui-lang-zh_CN.js"></script>
     <script>
         $(function () {
             $('tbody>tr').click(function () {
@@ -71,10 +73,32 @@
 
 <form action='/search/' method='post'>
     {% csrf_token %}
-    请输入查询姓名：<input type="text" name="searchName">
-    请输入查询工号：<input type="text" name="searchID">
-    请输入查询部门：<input type="text" name="searchDept">
-    <input type="submit" value="search">
+    <div>
+        查询姓名：<input type="text" name="searchName">
+        查询工号：<input type="text" name="searchID">
+        查询部门：
+        <select name="searchDept">
+            <option value=""></option>
+            <option value="技术">技术</option>
+            <option value="制造">制造</option>
+            <option value="质保">质保</option>
+            <option value="综合办">综合办</option>
+            <option value="质保">质保</option>
+            <option value="制造-物流">制造-物流</option>
+            <option value="质保">质保</option>
+            <option value="财务">财务</option>
+            <option value="商务">商务</option>
+        </select>
+        查询岗位：<input type="text" name="searchJob">
+    </div>
+    <div>
+       身份证号：<input type="text" name="searchEmpID">入职时段:从<input type="text" class="easyui-datebox" name="sDate"> 至  <input type="text" class="easyui-datebox" name="eDate">
+       含离职：<input type="checkbox" name="searchLeave" value="True">
+    </div>
+
+    <div>
+        <input type="submit" value="search">
+    </div>
 </form>
 
 <form action='/statistical/' method='post'>
@@ -86,6 +110,12 @@
     {% csrf_token %}
     <input type="submit" value="周报">
 </form>
+
+<form action='/showmodify/' method='post'>
+    {% csrf_token %}
+    <input type="submit" value="新增">
+</form>
+
 
 <form id="gridform" action='/delete/' method='post'>
     {% csrf_token %}
