@@ -105,10 +105,11 @@ def statistical(request):
     sgl = 0
     sjj = 0
     szj = 0
+
     if request.method == 'POST':
         # 按部门进行循环统计
         for dept in depts:
-            query = models.Employee.objects.filter(dept=dept,flag='O')
+            query = models.Employee.objects.filter(dept=dept, flag='O')
             zongji = query.count()
             # 按四大类别进行统计
             gc = query.filter(jobType='工程技术人员').count()
@@ -124,6 +125,27 @@ def statistical(request):
             szj = szj + zj
         sumBean = models.SumDataBean('总计', sgc, sgl, sjj, szj, sgc + sgl + sjj + szj)
         beanList.append(sumBean)
+        # export to excel
+        try:
+            pythoncom.CoInitialize()
+            excel_app = wc.Dispatch('Excel.Application')
+            workbook = excel_app.Workbooks.open(r'D:\pythonTraining\euniceHR\static\2.xlsx')
+            i = 2
+            for aSumItem in beanList:
+                workbook.Worksheets('Sheet1').Cells(i, 1).Value = aSumItem.deptName
+                workbook.Worksheets('Sheet1').Cells(i, 2).Value = aSumItem.gc
+                workbook.Worksheets('Sheet1').Cells(i, 3).Value = aSumItem.gl
+                workbook.Worksheets('Sheet1').Cells(i, 4).Value = aSumItem.jj
+                workbook.Worksheets('Sheet1').Cells(i, 5).Value = aSumItem.zj
+                workbook.Worksheets('Sheet1').Cells(i, 6).Value = aSumItem.zongji
+                i = i + 1
+            workbook.SaveAs(r'D:\statistical_wh.xlsx')
+        except:
+            print("导出excel失败！")
+        finally:
+            excel_app.Application.Quit()
+
+
     return render(request, 'sumpage.html', {'depts': depts, 'beanList': beanList})
 
 
@@ -221,6 +243,7 @@ def saveEmployee(request):
             employee.process = aform.cleaned_data['process']
             employee.jobType = aform.cleaned_data['jobType']
             employee.jobTitle = aform.cleaned_data['jobTitle']
+            employee.employType = aform.cleaned_data['employType']
             employee.mobile = aform.cleaned_data['mobile']
 
             employee.household = aform.cleaned_data['household']
@@ -255,10 +278,12 @@ def saveEmployee(request):
 
             # aList = models.Employee.objects.all()
             # return render(request, 'index.html', {'dataList': aList})
+        else:
+            return render(request, 'employee.html', {'form': aform})
 
     return HttpResponseRedirect('/index/')
 
-
+#删除记录
 def delete(request):
     if request.method == 'POST':
         checkboxlist = request.POST.getlist('checkboxlist')
@@ -268,6 +293,15 @@ def delete(request):
 
     return HttpResponseRedirect('/index/')
 
+#设置离职
+def leave(request):
+    if request.method == 'POST':
+        checkboxlist = request.POST.getlist('checkboxlist')
+        if checkboxlist:
+            idstring = ','.join(checkboxlist)
+            models.Employee.objects.extra(where=['id IN (' + idstring + ')']).update(flag = 'L')
+
+    return HttpResponseRedirect('/index/')
 
 def search(request):
     aList = models.Employee.objects.filter(flag='O')
@@ -281,7 +315,8 @@ def search(request):
         sDate = request.POST['sDate']
         eDate = request.POST['eDate']
         sEmpID = request.POST['searchEmpID']
-
+        sJobType = request.POST['searchJobType']
+        sEmployType = request.POST['searchEmployType']
         sLeave = request.POST.getlist("searchLeave")
 
         if sname:
@@ -294,6 +329,10 @@ def search(request):
             kwargs['job'] = sJob
         if sEmpID:
             kwargs['empID'] = sEmpID
+        if sJobType:
+            kwargs['jobType'] = sJobType
+        if sEmployType:
+            kwargs['employType'] = sEmployType
         if sLeave:
             kwargs['flag'] = 'L'
             aList = models.Employee.objects.all()

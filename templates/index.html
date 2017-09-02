@@ -44,23 +44,22 @@
             $("tr:odd").addClass("odd");
 
 
-            $(".grid").on("click", ".btnUPDATE", function () {
-                var url = "/modify/";
-                alert(url);
+            $(".grid").on("click", ".btnDELETE", function () {
+                var url = "/delete/";
                 //更改form的action
                 $("#gridform").attr("action", url);
                 //触发submit事件，提交表单
                 $("#gridform").submit();
             });
 
-            $(".grid").on("click", ".btnDELETE", function () {
-                var url = "/delete/";
-                alert(url);
+            $(".grid").on("click", ".btnLEAVE", function () {
+                var url = "/leave/";
                 //更改form的action
                 $("#gridform").attr("action", url);
                 //触发submit事件，提交表单
                 $("#gridform").submit();
             });
+
         })
     </script>
 
@@ -74,9 +73,9 @@
 <form action='/search/' method='post'>
     {% csrf_token %}
     <div>
-        查询姓名：<input type="text" name="searchName">
-        查询工号：<input type="text" name="searchID">
-        查询部门：
+        姓名：<input type="text" name="searchName">
+        工号：<input type="text" name="searchID">
+        部门：
         <select name="searchDept">
             <option value=""></option>
             <option value="技术">技术</option>
@@ -89,14 +88,27 @@
             <option value="财务">财务</option>
             <option value="商务">商务</option>
         </select>
-        查询岗位：<input type="text" name="searchJob">
+        岗位：<input type="text" name="searchJob">
+        岗位分类：
+        <select name="searchJobType">
+            <option value=""></option>
+            <option value="工程技术人员">工程技术人员</option>
+            <option value="管理人员">管理人员</option>
+            <option value="间接生产工人">间接生产工人</option>
+            <option value="直接生产工人">直接生产工人</option>
+        </select>
+        用工性质：
+        <select name="searchEmployType">
+            <option value=""></option>
+            <option value="在岗职工">在岗职工</option>
+            <option value="市内劳务工">市内劳务工</option>
+        </select>
+
+
     </div>
     <div>
        身份证号：<input type="text" name="searchEmpID">入职时段:从<input type="text" class="easyui-datebox" name="sDate"> 至  <input type="text" class="easyui-datebox" name="eDate">
        含离职：<input type="checkbox" name="searchLeave" value="True">
-    </div>
-
-    <div>
         <input type="submit" value="search">
     </div>
 </form>
@@ -126,11 +138,16 @@
             <td>部门</td>
             <td>姓名</td>
             <td>岗位</td>
+            <td>工段</td>
+            <td>班组</td>
+            <td>边缘工序</td>
             <td>身份证号</td>
             <td>性别</td>
             <td>出生年月</td>
             <td>入职时间</td>
+            <td>劳务公司</td>
             <td>删除</td>
+            <td>离职</td>
         </tr>
         {% for line in dataList %}
             <tr class="grid">
@@ -139,11 +156,16 @@
                 <td>{{ line.dept }}</td>
                 <td><a href='/showmodify/?id={{ line.id }}&opkind=m'>{{ line.name }}</a></td>
                 <td>{{ line.job }}</td>
+                <td>{{ line.section }}</td>
+                <td>{{ line.team }}</td>
+                <td>{{ line.process }}</td>
                 <td>{{ line.empID }}</td>
                 <td>{{ line.sex }}</td>
                 <td>{{ line.birthday }}</td>
                 <td>{{ line.onboardDate }}</td>
-                <td><input type="button" class="btnDELETE" value="DELETE"></td>
+                <td>{{ line.labor }}</td>
+                <td><input type="button" class="btnDELETE" value="删除"></td>
+                <td><input type="button" class="btnLEAVE" value="离职"></td>
             </tr>
         {% endfor %}
     </table>

@@ -9,6 +9,11 @@
     <script type="text/javascript" src="/static/js/jquery.min.js"></script>
     <script type="text/javascript" src="/static/js/jquery.easyui.min.js"></script>
     <script type="text/javascript" src="/static/js/easyui-lang-zh_CN.js"></script>
+    <style>
+        .error-msg {
+            color: red;
+        }
+    </style>
 </head>
 
 <script type="text/javascript">
@@ -30,18 +35,30 @@
 </script>
 
 
-
 <body>
 <form action='/saveemployee/' method='post' id="empfrm">
     {% csrf_token %}
     <table border="0.5" table-layout="fixed">
         <tr>
             <td>{{ form.dept.label }}</td>
-            <td>{{ form.dept }}</td>
+            <td>{{ form.dept }}
+                {% if  form.errors.dept %}
+                    <span class="error-msg">{{ form.errors.dept.0 }}</span>
+                {% endif %}
+            </td>
             <td>{{ form.name.label }}</td>
-            <td>{{ form.name }}</td>
+            <td>{{ form.name }}
+                {% if  form.errors.name %}
+                    <span class="error-msg">{{ form.errors.name.0 }}</span>
+                {% endif %}
+
+            </td>
             <td>{{ form.workID.label }}</td>
-            <td>{{ form.workID }}</td>
+            <td>{{ form.workID }}
+                {% if  form.errors.workID %}
+                    <span class="error-msg">{{ form.errors.workID.0 }}</span>
+                {% endif %}
+            </td>
             <td>{{ form.job.label }}</td>
             <td>{{ form.job }}</td>
         </tr>
@@ -66,7 +83,11 @@
 
         <tr>
             <td>{{ form.sex.label }}</td>
-            <td>{{ form.sex }}</td>
+            <td>{{ form.sex }}
+                {% if  form.errors.sex %}
+                    <span class="error-msg">{{ form.errors.sex.0 }}</span>
+                {% endif %}
+            </td>
             <td>{{ form.birthday.label }}</td>
             <td>{{ form.birthday }}</td>
             <td>{{ form.mobile.label }}</td>
@@ -149,7 +170,10 @@
             <td></td>
             <td></td>
             <td></td>
-            <td><input type="submit" value="Submit" onclick="disabled=true;submit()" /></td>
+            <td><input type="submit" value="保存" onclick="disabled=true;submit()"/><input type="button" name="back"
+                                                                                         value="取消"
+                                                                                         onclick="javascript:history.back(-1);"/>
+            </td>
         </tr>
     </table>
 </form>

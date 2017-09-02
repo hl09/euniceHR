@@ -5,24 +5,25 @@ DEPT_CHOICES = (
 ('技术', '技术'), ('制造', '制造'), ('质保', '质保'), ('综合办', '综合办'), ('制造-物流', '制造-物流'), ('财务', '财务'), ('商务', '商务'),
 ('安监室', '安监室'))
 JOB_CHOICES = (('工程技术人员','工程技术人员'),('管理人员','管理人员'),('间接生产工人','间接生产工人'),('直接生产工人','直接生产工人'))
-
+EMPTYPE_CHOICES= (('在岗职工', '在岗职工'), ('市内劳务工', '市内劳务工'))
 
 class VideoForm(forms.Form):
-    empID = forms.CharField(initial='', label='身份证号', required=False)
-    dept = forms.ChoiceField(choices=DEPT_CHOICES, label='部门', required=False)
-    name = forms.CharField(initial='', label='姓名', required=False)
-    sex = forms.ChoiceField(widget=forms.RadioSelect, choices=SEX_CHOICES, label="性别")
+    empID = forms.CharField(initial='', label='身份证号', required=True,error_messages={'required': '身份证号不能为空.'})
+    dept = forms.ChoiceField(choices=DEPT_CHOICES, label='部门', required=True,error_messages={'required': '部门不能为空.'})
+    name = forms.CharField(initial='', label='姓名', required=True,error_messages={'required': '姓名不能为空.'})
+    sex = forms.ChoiceField(widget=forms.RadioSelect, choices=SEX_CHOICES, label="性别",required=True,error_messages={'required': '性别不能为空.'})
     birthday = forms.DateField(widget=forms.DateInput(attrs={'class': 'easyui-datebox'}))
     workID = forms.CharField(initial='', label='工号', required=True,
                              error_messages={'required': "工号不能为空"})
-    job = forms.CharField(initial='', label='岗位')
+    job = forms.CharField(initial='', label='岗位',required=True,
+                             error_messages={'required': "岗位不能为空"})
 
-    section = forms.CharField(initial='', label='工段', required=False)
+    section = forms.CharField(initial='', label='工段',required=False)
 
     team = forms.CharField(initial='', label='班组', required=False)
     process = forms.CharField(initial='', label='边缘工序', required=False)
     jobType = forms.ChoiceField(choices=JOB_CHOICES,label='岗位分类',required=False)
-    employType = forms.CharField(initial='', label='用工性质', required=False)
+    employType = forms.ChoiceField(choices=EMPTYPE_CHOICES, label='用工性质', required=False)
     jobTitle = forms.CharField(initial='', label='职务', required=False)
     mobile = forms.CharField(initial='', label='移动电话', required=False)
     household = forms.CharField(initial='', label='户口所在地', required=False)

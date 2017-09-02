@@ -1,32 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script src="/static/js/jquery.min.js"></script>
     <script src="/static/js/jquery.js"></script>
     <script src="/static/js/jquery-ui.js"></script>
-    <script type="text/javascript">
 
-        function currentTime() {
-            var d = new Date(), str = '';
-            str += d.getFullYear() + '年';
-            str += d.getMonth() + 1 + '月';
-            str += d.getDate() + '日';
-            return str;
-        };
 
-        $(document).ready(function () {
-            $('#current-time').text(currentTime())
-        });
-    </script>
+
     <meta charset="UTF-8">
     <title>统计</title>
 </head>
 
 <body>
 
-
-<table border="1">
+<div id="div1">
+<table border="1" id="sumtable">
     <tr>
-        <td><div id="current-time"></div></td>
+        <td>
+        </td>
         <td>工程技术人员</td>
         <td>管理人员</td>
         <td>间接生产工人</td>
@@ -44,5 +36,6 @@
         </tr>
     {% endfor %}
 </table>
-</body>
+</div>
+<input type="button" name="back" value="返回" onclick="javascript:history.back(-1);"/></td>
 </html>
