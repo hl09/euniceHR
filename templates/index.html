@@ -2,34 +2,45 @@
 <html lang="en">
 <head Accept-Ranges="300">
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>员工基本信息</title>
 
     <style>
-        .even {
-            background-color: #f8f8f8;
+        table.gridtable {
+            font-family: verdana, arial, sans-serif;
+            font-size: 11px;
+            color: #333333;
+            border-width: 1px;
+            border-color: #666666;
+            border-collapse: collapse;
         }
 
-        .odd {
-            background-color: #f0f0f0;
+        table.gridtable th {
+            border-width: 1px;
+            padding: 8px;
+            border-style: solid;
+            border-color: #666666;
+            background-color: #dedede;
         }
 
-        .selected {
-            background-color: #FF6;
-        }
-
-        .se {
-            background-color: #666;
+        table.gridtable td {
+            border-width: 1px;
+            padding: 8px;
+            border-style: solid;
+            border-color: #666666;
+            background-color: #ffffff;
         }
 
 
     </style>
     <link rel="stylesheet" type="text/css" href="/static/css/easyui.css">
     <link rel="stylesheet" type="text/css" href="/static/css/icon.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/color.css">
     <link rel="stylesheet" type="text/css" href="/static/css/demo.css">
     <script type="text/javascript" src="/static/js/jquery.min.js"></script>
     <script type="text/javascript" src="/static/js/jquery.easyui.min.js"></script>
     <script type="text/javascript" src="/static/js/easyui-lang-zh_CN.js"></script>
     <script>
+
         $(function () {
             $('tbody>tr').click(function () {
                 $(this).addClass('selected') //为选中项添加高亮
@@ -45,19 +56,36 @@
 
 
             $(".grid").on("click", ".btnDELETE", function () {
-                var url = "/delete/";
-                //更改form的action
-                $("#gridform").attr("action", url);
-                //触发submit事件，提交表单
-                $("#gridform").submit();
+                $.messager.confirm('Confirm', '确定要删除记录吗?', function (r) {
+                    if (r) {
+                        var url = "/delete/";
+                        $("#gridform").attr("action", url);
+                        //触发submit事件，提交表单
+                        $("#gridform").submit();
+                    }
+                });
             });
 
             $(".grid").on("click", ".btnLEAVE", function () {
-                var url = "/leave/";
-                //更改form的action
-                $("#gridform").attr("action", url);
-                //触发submit事件，提交表单
-                $("#gridform").submit();
+                $.messager.confirm('Confirm', '确定要办理离职吗?', function (r) {
+                    if (r) {
+                        var url = "/leave/";
+                        $("#gridform").attr("action", url);
+                        //触发submit事件，提交表单
+                        $("#gridform").submit();
+                    }
+                });
+            });
+
+            $(".grid").on("click", ".btnREON", function () {
+                $.messager.confirm('Confirm', '确定要撤销离职吗?', function (r) {
+                    if (r) {
+                        var url = "/reon/";
+                        $("#gridform").attr("action", url);
+                        //触发submit事件，提交表单
+                        $("#gridform").submit();
+                    }
+                });
             });
 
         })
@@ -67,109 +95,126 @@
     <script type="text/javascript" src="/static/js/loading.js"></script>
 
 </head>
-<body>
+
+<body class="easyui-layout">
+<div id="operationpanel" region="west" style="width:100px" title="功能菜单" split="true">
 
 
-<form action='/search/' method='post'>
-    {% csrf_token %}
-    <div>
-        姓名：<input type="text" name="searchName">
-        工号：<input type="text" name="searchID">
-        部门：
-        <select name="searchDept">
-            <option value=""></option>
-            <option value="技术">技术</option>
-            <option value="制造">制造</option>
-            <option value="质保">质保</option>
-            <option value="综合办">综合办</option>
-            <option value="质保">质保</option>
-            <option value="制造-物流">制造-物流</option>
-            <option value="质保">质保</option>
-            <option value="财务">财务</option>
-            <option value="商务">商务</option>
-        </select>
-        岗位：<input type="text" name="searchJob">
-        岗位分类：
-        <select name="searchJobType">
-            <option value=""></option>
-            <option value="工程技术人员">工程技术人员</option>
-            <option value="管理人员">管理人员</option>
-            <option value="间接生产工人">间接生产工人</option>
-            <option value="直接生产工人">直接生产工人</option>
-        </select>
-        用工性质：
-        <select name="searchEmployType">
-            <option value=""></option>
-            <option value="在岗职工">在岗职工</option>
-            <option value="市内劳务工">市内劳务工</option>
-        </select>
+    <form action='/statistical/' method='post'>
+        {% csrf_token %}
+        <input type="submit" value="统计">
+    </form>
+
+    <form action='/weekreport/' method='post'>
+        {% csrf_token %}
+        <input type="submit" value="周报">
+    </form>
+
+    <form action='/showmodify/' method='post'>
+        {% csrf_token %}
+        <input type="submit" value="新增">
+    </form>
+</div>
 
 
-    </div>
-    <div>
-       身份证号：<input type="text" name="searchEmpID">入职时段:从<input type="text" class="easyui-datebox" name="sDate"> 至  <input type="text" class="easyui-datebox" name="eDate">
-       含离职：<input type="checkbox" name="searchLeave" value="True">
-        <input type="submit" value="search">
-    </div>
-</form>
+<div class="easyui-panel" region="north" title="查询工具栏" iconCls="icon-search" collapsible="true" style="padding:5px;width:500px;height:100px;">
+<div id="searchpanel" region="north">
+    <form action='/search/' method='post' id="queryfrm">
+        {% csrf_token %}
+        <div>
+            姓名：<input type="text" name="searchName">
+            工号：<input type="text" name="searchID">
+            部门：
+            <select name="searchDept">
+                <option value=""></option>
+                <option value="技术">技术</option>
+                <option value="制造">制造</option>
+                <option value="质保">质保</option>
+                <option value="综合办">综合办</option>
+                <option value="质保">质保</option>
+                <option value="制造-物流">制造-物流</option>
+                <option value="质保">质保</option>
+                <option value="财务">财务</option>
+                <option value="商务">商务</option>
+            </select>
+            岗位：<input type="text" name="searchJob">
+            岗位分类：
+            <select name="searchJobType">
+                <option value=""></option>
+                <option value="工程技术人员">工程技术人员</option>
+                <option value="管理人员">管理人员</option>
+                <option value="间接生产工人">间接生产工人</option>
+                <option value="直接生产工人">直接生产工人</option>
+            </select>
+            用工性质：
+            <select name="searchEmployType">
+                <option value=""></option>
+                <option value="在岗职工">在岗职工</option>
+                <option value="市内劳务工">市内劳务工</option>
+            </select>
 
-<form action='/statistical/' method='post'>
-    {% csrf_token %}
-    <input type="submit" value="统计">
-</form>
 
-<form action='/weekreport/' method='post'>
-    {% csrf_token %}
-    <input type="submit" value="周报">
-</form>
+        </div>
+        <div>
+            身份证号：<input type="text" name="searchEmpID">入职时段:从<input type="text" class="easyui-datebox" name="sDate"> 至
+            <input type="text" class="easyui-datebox" name="eDate">
+            含离职：<input type="checkbox" name="searchLeave" value="True">
+            <a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="$('#queryfrm').submit();">Query</a>
+        </div>
+    </form>
+</div>
+</div>
 
-<form action='/showmodify/' method='post'>
-    {% csrf_token %}
-    <input type="submit" value="新增">
-</form>
-
-
-<form id="gridform" action='/delete/' method='post'>
-    {% csrf_token %}
-    <table border="1">
-        <tr>
-            <td></td>
-            <td>工号</td>
-            <td>部门</td>
-            <td>姓名</td>
-            <td>岗位</td>
-            <td>工段</td>
-            <td>班组</td>
-            <td>边缘工序</td>
-            <td>身份证号</td>
-            <td>性别</td>
-            <td>出生年月</td>
-            <td>入职时间</td>
-            <td>劳务公司</td>
-            <td>删除</td>
-            <td>离职</td>
-        </tr>
-        {% for line in dataList %}
-            <tr class="grid">
-                <td><input type="checkbox" value="{{ line.id }}" name="checkboxlist"></td>
-                <td>{{ line.workID }}</td>
-                <td>{{ line.dept }}</td>
-                <td><a href='/showmodify/?id={{ line.id }}&opkind=m'>{{ line.name }}</a></td>
-                <td>{{ line.job }}</td>
-                <td>{{ line.section }}</td>
-                <td>{{ line.team }}</td>
-                <td>{{ line.process }}</td>
-                <td>{{ line.empID }}</td>
-                <td>{{ line.sex }}</td>
-                <td>{{ line.birthday }}</td>
-                <td>{{ line.onboardDate }}</td>
-                <td>{{ line.labor }}</td>
-                <td><input type="button" class="btnDELETE" value="删除"></td>
-                <td><input type="button" class="btnLEAVE" value="离职"></td>
+<div id="main" region="center">
+    <form id="gridform" action='/delete/' method='post'>
+        {% csrf_token %}
+        <table class="gridtable">
+            <tr>
+                <th></th>
+                <th>工号</th>
+                <th>部门</th>
+                <th>姓名</th>
+                <th>岗位</th>
+                <th>工段</th>
+                <th>班组</th>
+                <th>边缘工序</th>
+                <th>身份证号</th>
+                <th>性别</th>
+                <th>出生年月</th>
+                <th>入职时间</th>
+                <th>劳务公司</th>
+                <th>删除</th>
+                <th>离职操作</th>
             </tr>
-        {% endfor %}
-    </table>
-</form>
+            {% for line in dataList %}
+                <tr class="grid">
+                    <td><input type="checkbox" value="{{ line.id }}" name="checkboxlist"></td>
+                    <td>{{ line.workID }}</td>
+                    <td>{{ line.dept }}</td>
+                    <td><a href='/showmodify/?id={{ line.id }}&opkind=m'>{{ line.name }}</a></td>
+                    <td>{{ line.job }}</td>
+                    <td>{{ line.section }}</td>
+                    <td>{{ line.team }}</td>
+                    <td>{{ line.process }}</td>
+                    <td>{{ line.empID }}</td>
+                    <td>{{ line.sex }}</td>
+                    <td>{{ line.birthday }}</td>
+                    <td>{{ line.onboardDate }}</td>
+                    <td>{{ line.labor }}</td>
+                    <td><input type="button" class="btnDELETE" value="删除"></td>
+                    {% if line.flag == 'O' %}
+                    <td><input type="button" class="btnLEAVE" value="离职"></td>
+                    {% endif %}
+                    {% if line.flag == 'L' %}
+                    <td><input type="button" class="btnREON" value="离职撤销"></td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </table>
 
+    </form>
+</div>
 </body>
+
+
 </html>

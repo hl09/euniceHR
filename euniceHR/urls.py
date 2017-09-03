@@ -19,6 +19,6 @@ from eunice.views import *
 from django.conf import settings
 from django.conf.urls.static import static
 
-urlpatterns = [url(r'^showgrid/$',showgrid),url(r'^$',employeeList),url(r'^leave/$', leave),url(r'^delete/$', delete),url(r'^weekreport/$', weekReport),url(r'^statistical/$', statistical),url(r'^saveemployee/$', saveEmployee),url(r'^showmodify/$', showModify), url(r'^search/$', search), url(r'^index/$',employeeList)] + static(
+urlpatterns = [url(r'^showgrid/$',showgrid),url(r'^$',employeeList),url(r'^reon/$', reon),url(r'^leave/$', leave),url(r'^delete/$', delete),url(r'^weekreport/$', weekReport),url(r'^statistical/$', statistical),url(r'^saveemployee/$', saveEmployee),url(r'^showmodify/$', showModify), url(r'^search/$', search), url(r'^index/$',employeeList)] + static(
     settings.STATIC_URL,
     document_root=settings.STATIC_ROOT)

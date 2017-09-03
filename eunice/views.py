@@ -303,6 +303,16 @@ def leave(request):
 
     return HttpResponseRedirect('/index/')
 
+#撤销离职
+def reon(request):
+    if request.method == 'POST':
+        checkboxlist = request.POST.getlist('checkboxlist')
+        if checkboxlist:
+            idstring = ','.join(checkboxlist)
+            models.Employee.objects.extra(where=['id IN (' + idstring + ')']).update(flag = 'O')
+
+    return HttpResponseRedirect('/index/')
+
 def search(request):
     aList = models.Employee.objects.filter(flag='O')
     if request.POST:

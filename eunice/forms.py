@@ -61,3 +61,4 @@ class VideoForm(forms.Form):
     flag = forms.CharField(initial='O', label='标记', required=False)
 
     opkind = forms.CharField(initial='', label='opkind',required=False)
+
